@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
+import javax.management.relation.Role;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -44,11 +46,11 @@ public class User {
     // Explicit LONGTEXT mapping prevents Hibernate from
     // changing the database column to TINYTEXT.
     @Column(
-        name = "profile_photo",
-        columnDefinition = "LONGTEXT",
-        nullable = true
-    )
-    private String profilePhoto;
+    name = "profile_photo",
+    columnDefinition = "TEXT",
+    nullable = true
+)
+private String profilePhoto;
 
     @Column(nullable = false)
     private Boolean active = true;
