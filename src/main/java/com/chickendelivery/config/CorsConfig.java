@@ -14,14 +14,19 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
-        // React frontend
+        // Local development origins
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:3000")
+                Arrays.asList(
+                        "http://localhost:3000",
+                        "http://localhost:5173"
+                )
         );
 
-        // HTTP methods
+        // Add your Vercel frontend URL here after deployment.
+
         configuration.setAllowedMethods(
                 Arrays.asList(
                         "GET",
@@ -33,15 +38,12 @@ public class CorsConfig {
                 )
         );
 
-        // Request headers
         configuration.setAllowedHeaders(
                 Arrays.asList("*")
         );
 
-        // Allow Authorization header / cookies if needed
         configuration.setAllowCredentials(true);
 
-        // Response headers accessible to frontend
         configuration.setExposedHeaders(
                 Arrays.asList("Authorization")
         );
