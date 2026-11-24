@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -14,19 +15,30 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "ChickenDeliverySystemSecretKeyForJwtAuthentication2026SecureKey";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private static final long EXPIRATION_TIME =
-            1000 * 60 * 60 * 24; // 24 hours
+    @Value("${jwt.expiration:86400000}")
+    private long expirationTime;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(
-                SECRET.getBytes(StandardCharsets.UTF_8)
-        );
+
+        byte[] keyBytes =
+                secret.getBytes(StandardCharsets.UTF_8);
+
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException(
+                    "JWT secret must contain at least 32 bytes"
+            );
+        }
+
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email, String role, Long userId) {
+    public String generateToken(
+            String email,
+            String role,
+            Long userId) {
 
         return Jwts.builder()
                 .subject(email)
@@ -34,7 +46,7 @@ public class JwtService {
                 .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(
-                        System.currentTimeMillis() + EXPIRATION_TIME
+                        System.currentTimeMillis() + expirationTime
                 ))
                 .signWith(getSigningKey())
                 .compact();
@@ -63,10 +75,16 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    
+
     public String extractRole(String token) {
 
         return getClaims(token)
                 .get("role", String.class);
+    }
+
+    public Long extractUserId(String token) {
+
+        return getClaims(token)
+                .get("userId", Long.class);
     }
 }
