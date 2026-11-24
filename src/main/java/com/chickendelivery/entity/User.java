@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
-import javax.management.relation.Role;
+import com.chickendelivery.entity.Role;
 
 @Entity
 @Table(name = "users")
