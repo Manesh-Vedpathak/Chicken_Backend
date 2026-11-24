@@ -30,10 +30,13 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+            // Disable CSRF for stateless REST APIs
             .csrf(csrf -> csrf.disable())
 
+            // Enable CORS configuration
             .cors(cors -> {})
 
+            // Use stateless JWT authentication
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS
@@ -48,19 +51,16 @@ public class SecurityConfig {
                     "/**"
                 ).permitAll()
 
-                // Public authentication endpoints
+                // Allow all authentication endpoints
                 .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/register/patient",
-                    "/api/auth/login",
-                    "/api/auth/forgot-password",
-                    "/api/auth/reset-password"
+                    "/api/auth/**"
                 ).permitAll()
 
                 // Public product catalogue
                 .requestMatchers(
                     HttpMethod.GET,
-                    "/api/products"
+                    "/api/products",
+                    "/api/products/**"
                 ).permitAll()
 
                 // Public product images
@@ -79,10 +79,11 @@ public class SecurityConfig {
                     "/api/admin/**"
                 ).hasRole("ADMIN")
 
-                // All other endpoints require authentication
+                // All remaining endpoints require authentication
                 .anyRequest().authenticated()
             )
 
+            // Add JWT filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
