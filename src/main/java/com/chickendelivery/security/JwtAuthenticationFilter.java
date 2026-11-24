@@ -1,6 +1,7 @@
 package com.chickendelivery.security;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +24,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.startsWith("/api/auth/")
+                || "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -31,24 +41,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // No Authorization header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract token
         String token = authHeader.substring(7);
 
         try {
-
-            // Validate token
             if (jwtService.isTokenValid(token)) {
 
                 String email = jwtService.extractEmail(token);
-
-                // Get role from JWT
                 String role = jwtService.extractRole(token);
 
                 SimpleGrantedAuthority authority =
@@ -58,28 +61,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 email,
                                 null,
-                                java.util.List.of(authority)
+                                List.of(authority)
                         );
 
-                SecurityContextHolder
-                        .getContext()
+                SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
             }
 
         } catch (Exception e) {
 
             SecurityContextHolder.clearContext();
+
+            // Do not reject the request here.
+            // Protected endpoints will require valid authentication.
         }
 
         filterChain.doFilter(request, response);
     }
-
-    @Override
-protected boolean shouldNotFilter(HttpServletRequest request) {
-
-    String path = request.getServletPath();
-
-    return path.startsWith("/api/auth/")
-            || "OPTIONS".equalsIgnoreCase(request.getMethod());
-}
 }

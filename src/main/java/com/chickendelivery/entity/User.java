@@ -45,11 +45,8 @@ public class User {
     // Store the cropped profile image as a Base64 string.
     // Explicit LONGTEXT mapping prevents Hibernate from
     // changing the database column to TINYTEXT.
-    @Column(
-    name = "profile_photo",
-    columnDefinition = "TEXT",
-    nullable = true
-)
+   // PostgreSQL TEXT column stores the Base64 profile image.
+@Column(name = "profile_photo", columnDefinition = "TEXT")
 private String profilePhoto;
 
     @Column(nullable = false)
