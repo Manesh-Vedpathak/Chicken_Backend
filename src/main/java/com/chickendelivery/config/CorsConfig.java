@@ -17,16 +17,16 @@ public class CorsConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        // Local development origins
+        // Local development and live Vercel frontend
         configuration.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:3000",
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://mv-chickendeliverysystem.vercel.app"
                 )
         );
 
-        // Add your Vercel frontend URL here after deployment.
-
+        // HTTP methods
         configuration.setAllowedMethods(
                 Arrays.asList(
                         "GET",
@@ -38,12 +38,15 @@ public class CorsConfig {
                 )
         );
 
+        // Request headers
         configuration.setAllowedHeaders(
                 Arrays.asList("*")
         );
 
+        // Allow credentials
         configuration.setAllowCredentials(true);
 
+        // Expose Authorization header
         configuration.setExposedHeaders(
                 Arrays.asList("Authorization")
         );
