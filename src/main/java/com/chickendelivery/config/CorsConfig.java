@@ -14,50 +14,30 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
-        // Local development and live Vercel frontend
-        configuration.setAllowedOrigins(
-                Arrays.asList(
-                        "http://localhost:3000",
-                        "http://localhost:5173",
-                        "https://mv-chickendeliverysystem.vercel.app"
-                )
-        );
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://mv-chickendeliverysystem.vercel.app",
+                "https://chicken-frontend-e6cnxpa4z-manesh6.vercel.app"
+        ));
 
-        // HTTP methods
-        configuration.setAllowedMethods(
-                Arrays.asList(
-                        "GET",
-                        "POST",
-                        "PUT",
-                        "DELETE",
-                        "PATCH",
-                        "OPTIONS"
-                )
-        );
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
+        ));
 
-        // Request headers
-        configuration.setAllowedHeaders(
-                Arrays.asList("*")
-        );
-
-        // Allow credentials
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 
-        // Expose Authorization header
-        configuration.setExposedHeaders(
-                Arrays.asList("Authorization")
-        );
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization"
+        ));
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration
-        );
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
