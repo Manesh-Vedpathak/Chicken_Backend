@@ -19,6 +19,11 @@ public class CorsConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:5173",
+
+                // New production frontend
+                "https://mv-chicken.vercel.app",
+
+                // Previous frontend domains
                 "https://mv-chickendeliverysystem.vercel.app",
                 "https://chicken-frontend-e6cnxpa4z-manesh6.vercel.app"
         ));
@@ -28,6 +33,7 @@ public class CorsConfig {
         ));
 
         configuration.setAllowedHeaders(Arrays.asList("*"));
+
         configuration.setAllowCredentials(true);
 
         configuration.setExposedHeaders(Arrays.asList(
